@@ -35,9 +35,33 @@ npm start
 
 The production server serves both `/api/*` and the React build from `client/dist`.
 
-## RDS Migration
+## Amazon RDS MySQL Setup
 
-The app uses standard MySQL connection environment variables. To move from MySQL on EC2 to Amazon RDS, keep the schema the same and update `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME`.
+The app can use Amazon RDS for MySQL without changing the schema.
+
+1. Create an Amazon RDS database with the MySQL engine.
+2. Allow inbound TCP traffic on port `3306` from the machine or EC2 instance running this app.
+3. Create the app database on RDS:
+
+```bash
+mysql -h your-rds-endpoint.ap-northeast-2.rds.amazonaws.com -P 3306 -u admin -p \
+  < server/schema/create-database.sql
+```
+
+4. Copy `.env.example` to `.env` and update these values:
+
+```env
+DB_HOST=your-rds-endpoint.ap-northeast-2.rds.amazonaws.com
+DB_PORT=3306
+DB_USER=studyroom
+DB_PASSWORD=studyroom_password
+DB_NAME=studyroom_db
+DB_SSL=true
+DB_SSL_ALLOW_UNAUTHORIZED=false
+DB_SSL_CA_PATH=
+```
+
+If your RDS instance does not require SSL, set `DB_SSL=false`. Keep `DB_SSL_ALLOW_UNAUTHORIZED=false` unless you are debugging a local certificate issue. If certificate verification fails, download the AWS RDS CA bundle and set `DB_SSL_CA_PATH` to the local certificate file path.
 
 ## Demo Roles
 

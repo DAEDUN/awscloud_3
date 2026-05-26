@@ -1,6 +1,27 @@
+import fs from 'node:fs';
 import mysql from 'mysql2/promise';
 
 let pool;
+
+function parseBoolean(value) {
+  return ['1', 'true', 'yes', 'on'].includes(String(value).toLowerCase());
+}
+
+function createSslOptions() {
+  if (!parseBoolean(process.env.DB_SSL)) {
+    return undefined;
+  }
+
+  const ssl = {
+    rejectUnauthorized: !parseBoolean(process.env.DB_SSL_ALLOW_UNAUTHORIZED)
+  };
+
+  if (process.env.DB_SSL_CA_PATH) {
+    ssl.ca = fs.readFileSync(process.env.DB_SSL_CA_PATH, 'utf8');
+  }
+
+  return ssl;
+}
 
 export function getPool() {
   if (!pool) {
@@ -13,7 +34,8 @@ export function getPool() {
       waitForConnections: true,
       connectionLimit: 10,
       namedPlaceholders: true,
-      dateStrings: true
+      dateStrings: true,
+      ssl: createSslOptions()
     });
   }
   return pool;
