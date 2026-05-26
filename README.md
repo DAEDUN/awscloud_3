@@ -65,6 +65,8 @@ Then run the API server on EC2:
 npm start
 ```
 
+The server starts even if RDS is temporarily unreachable. It retries database initialization every `DB_INIT_RETRY_INTERVAL_MS` milliseconds, defaulting to `30000`.
+
 The security groups must allow:
 
 - User browser to EC2 on the API port, usually `3000`
