@@ -1,0 +1,27 @@
+{
+  "name": "study-room-reservation",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "install:all": "npm install && npm install --prefix client",
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "nodemon server/src/index.js",
+    "client:dev": "npm run dev --prefix client",
+    "build": "npm install --prefix client && npm run build --prefix client",
+    "start": "node server/src/index.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "cors": "2.8.5",
+    "dotenv": "16.4.7",
+    "express": "4.21.2",
+    "helmet": "7.2.0",
+    "mysql2": "3.11.5"
+  },
+  "devDependencies": {
+    "concurrently": "8.2.2",
+    "nodemon": "3.1.9",
+    "vitest": "0.34.6"
+  }
+}
