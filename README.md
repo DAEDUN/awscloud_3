@@ -63,6 +63,30 @@ DB_SSL_CA_PATH=
 
 If your RDS instance does not require SSL, set `DB_SSL=false`. Keep `DB_SSL_ALLOW_UNAUTHORIZED=false` unless you are debugging a local certificate issue. If certificate verification fails, download the AWS RDS CA bundle and set `DB_SSL_CA_PATH` to the local certificate file path.
 
+### Connecting through an SSH tunnel
+
+If the RDS instance is private, connect through an EC2 instance in the same VPC. Keep this SSH tunnel running in a separate terminal:
+
+```bash
+ssh -i /path/to/key.pem \
+  -L 3307:your-rds-endpoint.ap-northeast-2.rds.amazonaws.com:3306 \
+  ec2-user@your-ec2-public-ip
+```
+
+Then point the app to the local tunnel:
+
+```env
+DB_HOST=127.0.0.1
+DB_PORT=3307
+DB_USER=studyroom
+DB_PASSWORD=studyroom_password
+DB_NAME=studyroom_db
+DB_SSL=true
+DB_SSL_ALLOW_UNAUTHORIZED=false
+```
+
+When the app runs on an EC2 instance in the same VPC as RDS, an SSH tunnel is usually not needed. Set `DB_HOST` to the RDS endpoint and allow the EC2 security group to access the RDS security group on port `3306`.
+
 ## Demo Roles
 
 The first screen lets you choose one of three roles:
