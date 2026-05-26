@@ -41,7 +41,14 @@ When the React frontend is hosted on S3 static website hosting and the API runs 
 
 ```bash
 cd client
-VITE_API_BASE_URL=http://your-ec2-public-ip:3000 npm run build
+cp .env.example .env
+npm run build
+```
+
+Set `VITE_API_BASE_URL` in `client/.env` before building:
+
+```env
+VITE_API_BASE_URL=http://your-ec2-public-ip:3000
 ```
 
 Upload `client/dist` to the S3 bucket configured for static website hosting.
@@ -63,7 +70,7 @@ The security groups must allow:
 - User browser to EC2 on the API port, usually `3000`
 - EC2 to RDS on MySQL port `3306`
 
-For production, put EC2 behind a domain or load balancer with HTTPS and set `VITE_API_BASE_URL` to that HTTPS URL.
+For production, put EC2 behind a domain or load balancer with HTTPS and set `VITE_API_BASE_URL` to that HTTPS URL. Vite embeds `VITE_API_BASE_URL` during the frontend build, so rebuild and re-upload `client/dist` after changing it.
 
 ## Amazon RDS MySQL Setup
 
