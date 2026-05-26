@@ -1,0 +1,9 @@
+node_modules
+client/node_modules
+client/dist
+.git
+.env
+client/.env
+coverage
+npm-debug.log*
+.DS_Store
