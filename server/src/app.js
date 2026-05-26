@@ -8,13 +8,34 @@ import { apiRouter } from './routes.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+function createCorsOptions() {
+  const allowedOrigins = (process.env.CORS_ORIGIN || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  if (allowedOrigins.length === 0) {
+    return {};
+  }
+
+  return {
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error('Not allowed by CORS'));
+    }
+  };
+}
+
 export function createApp() {
   const app = express();
 
   app.use(helmet({
     contentSecurityPolicy: false
   }));
-  app.use(cors());
+  app.use(cors(createCorsOptions()));
   app.use(express.json());
 
   app.use('/api', apiRouter);

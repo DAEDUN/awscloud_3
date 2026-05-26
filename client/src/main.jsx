@@ -14,6 +14,7 @@ import {
 import './styles.css';
 
 const today = new Date().toISOString().slice(0, 10);
+const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 
 const statusLabels = {
   CONFIRMED: '예약확정',
@@ -26,7 +27,7 @@ const statusLabels = {
 };
 
 async function api(path, options = {}) {
-  const response = await fetch(`/api${path}`, {
+  const response = await fetch(`${apiBaseUrl}/api${path}`, {
     headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
     ...options
   });

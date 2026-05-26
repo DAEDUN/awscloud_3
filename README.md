@@ -35,6 +35,36 @@ npm start
 
 The production server serves both `/api/*` and the React build from `client/dist`.
 
+## S3 Frontend and EC2 API
+
+When the React frontend is hosted on S3 static website hosting and the API runs on EC2, build the frontend with the EC2 API URL:
+
+```bash
+cd client
+VITE_API_BASE_URL=http://your-ec2-public-ip:3000 npm run build
+```
+
+Upload `client/dist` to the S3 bucket configured for static website hosting.
+
+On the EC2 instance, set `CORS_ORIGIN` to the S3 static website URL:
+
+```env
+CORS_ORIGIN=http://your-bucket.s3-website.ap-northeast-2.amazonaws.com
+```
+
+Then run the API server on EC2:
+
+```bash
+npm start
+```
+
+The security groups must allow:
+
+- User browser to EC2 on the API port, usually `3000`
+- EC2 to RDS on MySQL port `3306`
+
+For production, put EC2 behind a domain or load balancer with HTTPS and set `VITE_API_BASE_URL` to that HTTPS URL.
+
 ## Amazon RDS MySQL Setup
 
 The app can use Amazon RDS for MySQL without changing the schema.
